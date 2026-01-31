@@ -9,3 +9,5 @@ RUN apt-get update && \
     apt-get remove --purge -y git make gcc && \
     apt-get autoremove -y && \
     apt-get clean
+
+COPY init-data.sh /docker-entrypoint-initdb.d/init-data.sh
