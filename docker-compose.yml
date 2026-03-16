@@ -25,6 +25,8 @@ x-shared: &shared
     - N8N_SMTP_SENDER=${N8N_SMTP_SENDER}
     - N8N_SMTP_PORT=${N8N_SMTP_PORT:-465}
     - N8N_SMTP_SSL=${N8N_SMTP_SSL:-true}
+    # Timezone
+    - GENERIC_TIMEZONE=${TZ}
     # Webhook
     - WEBHOOK_URL=${WEBHOOK_URL}
   links:
