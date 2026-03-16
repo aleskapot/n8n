@@ -96,6 +96,7 @@ services:
       - /bin/sh
       - -c
       - |
+        cf="/mosquitto/config/mosquitto.conf"
         pf="/mosquitto/config/pwfile"
         if [ ! -f $$pf ]; then
           echo "> Creating password file"
