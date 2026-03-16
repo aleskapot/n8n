@@ -46,7 +46,7 @@ services:
     build:
       context: .
       dockerfile: Postgresql.Dockerfile
-    restart: always
+    restart: unless-stopped
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
@@ -67,7 +67,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    restart: always
+    restart: unless-stopped
     volumes:
       - /app/data/n8n/redis:/data
     healthcheck:
@@ -75,6 +75,41 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  mqtt:
+    image: eclipse-mosquitto:2.1.2-alpine
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ}
+    ports:
+      - "${MQTT_PORT}:1883" #default mqtt port
+      - "${MQTT_WS_PORT}:9001" #default mqtt port for websockets
+    command:
+      - /bin/sh
+      - -c
+      - |
+        pf="/mosquitto/config/pwfile"
+        if [ ! -f $$pf ]; then
+          echo "> Creating password file"
+          touch $$pf
+          chown mosquitto:mosquitto $$pf
+          chmod 600 $$pf
+          /usr/bin/mosquitto_passwd -b $$pf $$MQTTADMIN $$MQTTADMINPASS
+        fi
+        echo "> Running Eclipse-Mosquitto MQTT"
+        /usr/sbin/mosquitto -c $$cf
+    volumes:
+      - ./mosquitto:/mosquitto/config
+      - /app/data/n8n/mosquitto:/mosquitto/data
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "14"
+    healthcheck:
+      test: mosquitto_sub -u docker -P docker -t '$$SYS/broker/uptime' -C 1 -i healthcheck -W 3
+      interval: 10s
+      timeout: 5s
+      retries: 2
 
   n8n:
     <<: *shared
