@@ -80,7 +80,15 @@ services:
     image: eclipse-mosquitto:2.1.2-alpine
     restart: unless-stopped
     environment:
-      - TZ=${TZ}
+      TZ: ${TZ}
+      CONFIG_CONTENT: |-
+        allow_anonymous false
+        listener 1883
+        listener 9001
+        protocol websockets
+        persistence true
+        password_file /mosquitto/config/pwfile
+        persistence_location /mosquitto/data/
     ports:
       - "${MQTT_PORT}:1883" #default mqtt port
       - "${MQTT_WS_PORT}:9001" #default mqtt port for websockets
@@ -99,7 +107,6 @@ services:
         echo "> Running Eclipse-Mosquitto MQTT"
         /usr/sbin/mosquitto -c $$cf
     volumes:
-      - ./mosquitto:/mosquitto/config
       - /app/data/n8n/mosquitto:/mosquitto/data
     logging:
       options:
