@@ -39,6 +39,10 @@ x-shared: &shared
       condition: service_healthy
     postgres:
       condition: service_healthy
+    mqtt:
+      condition: service_healthy
+    qdrant:
+      condition: service_healthy
 
 services:
   postgres:
@@ -117,7 +121,7 @@ services:
       test: mosquitto_sub -u docker -P docker -t '$$SYS/broker/uptime' -C 1 -i healthcheck -W 3
       interval: 10s
       timeout: 5s
-      retries: 2
+      retries: 3
 
   qdrant:
     image: qdrant/qdrant
@@ -134,9 +138,9 @@ services:
       - /app/data/n8n/qdrant:/qdrant/storage
     healthcheck:
       test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/6333 && echo -e 'GET /readyz HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && grep -q 'HTTP/1.1 200' <&3"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   n8n:
     <<: *shared
