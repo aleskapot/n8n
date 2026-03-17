@@ -124,6 +124,7 @@ services:
     restart: unless-stopped
     environment:
       QDRANT__SERVICE__API_KEY: ${QDRANT_API_KEY:-}
+      QDRANT__TELEMETRY_DISABLED: true
     ports:
       # HTTP API
       - "${QDRANT_API_PORT}:6333"
