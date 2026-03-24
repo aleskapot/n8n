@@ -16,7 +16,9 @@ x-shared: &shared
     - OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS=true
     # Security
     - N8N_ENCRYPTION_KEY=${ENCRYPTION_KEY}
-    - N8N_SECURE_COOKIE=false     # disables the security coolie feature (not recommended)
+    - N8N_SECURE_COOKIE=false     # disables the security cookie feature (not recommended)
+    - N8N_DIAGNOSTICS_ENABLED=false
+    - N8N_RESTRICT_FILE_ACCESS_TO="/shared;/tmp;/home/node/.n8n-files"
     # Email settings
     - N8N_EMAIL_MODE=smtp
     - N8N_SMTP_HOST=${N8N_SMTP_HOST}
@@ -34,6 +36,7 @@ x-shared: &shared
     - redis
   volumes:
     - /app/data/n8n/storage:/home/node/.n8n
+    - /app/data/n8n/shared:/shared
   depends_on:
     redis:
       condition: service_healthy
