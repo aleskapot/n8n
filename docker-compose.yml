@@ -19,6 +19,7 @@ x-shared: &shared
     - N8N_SECURE_COOKIE=false     # disables the security cookie feature (not recommended)
     - N8N_DIAGNOSTICS_ENABLED=false
     - N8N_RESTRICT_FILE_ACCESS_TO="/shared;/tmp;/home/node/.n8n-files"
+    - N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true   # allows tools in community packages to be used
     # Email settings
     - N8N_EMAIL_MODE=smtp
     - N8N_SMTP_HOST=${N8N_SMTP_HOST}
