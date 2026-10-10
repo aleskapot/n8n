@@ -45,8 +45,8 @@ x-shared: &shared
       condition: service_healthy
     mqtt:
       condition: service_healthy
-    qdrant:
-      condition: service_healthy
+    # qdrant:
+    #   condition: service_healthy
 
 services:
   postgres:
@@ -127,24 +127,24 @@ services:
       timeout: 5s
       retries: 3
 
-  qdrant:
-    image: qdrant/qdrant
-    restart: unless-stopped
-    environment:
-      QDRANT__SERVICE__API_KEY: ${QDRANT_API_KEY:-}
-      QDRANT__TELEMETRY_DISABLED: true
-    ports:
-      # HTTP API
-      - "${QDRANT_API_PORT}:6333"
-      # gRPC API
-      # - "6334:6334"
-    volumes:
-      - /app/data/n8n/qdrant:/qdrant/storage
-    healthcheck:
-      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/6333 && echo -e 'GET /readyz HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && grep -q 'HTTP/1.1 200' <&3"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
+  # qdrant:
+  #   image: qdrant/qdrant
+  #   restart: unless-stopped
+  #   environment:
+  #     QDRANT__SERVICE__API_KEY: ${QDRANT_API_KEY:-}
+  #     QDRANT__TELEMETRY_DISABLED: true
+  #   ports:
+  #     # HTTP API
+  #     - "${QDRANT_API_PORT}:6333"
+  #     # gRPC API
+  #     # - "6334:6334"
+  #   volumes:
+  #     - /app/data/n8n/qdrant:/qdrant/storage
+  #   healthcheck:
+  #     test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/6333 && echo -e 'GET /readyz HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && grep -q 'HTTP/1.1 200' <&3"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 3
 
   n8n:
     <<: *shared
